@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const monTableau = ref([1, 2, 3, 4])
+const monTableau = ref([1, 2, 3, 4]);
 
 const ajouterElement = () => {
-  monTableau.value.push(monTableau.value.length + 1)
-}
+  monTableau.value.push(monTableau.value.length + 1);
+};
 </script>
 
 <template>
@@ -15,6 +15,7 @@ const ajouterElement = () => {
   <button @mousemove="ajouterElement()">Ajouter une valeur</button>
   <br />
   <span v-for="element in monTableau" v-bind:key="element"> mon élément est {{ element }} </span>
+  <input type="checkbox" :checked="element.done">
 </template>
 
 <style scoped></style>
