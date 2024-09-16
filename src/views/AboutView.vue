@@ -1,6 +1,9 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>
+      Cette page est vide pour l'instant mais un jour viendra il y aura quelque chose dedans, je le
+      jure
+    </h1>
   </div>
 </template>
 
@@ -11,5 +14,10 @@
     display: flex;
     align-items: center;
   }
+}
+
+h1 {
+  font-size: 2rem;
+  justify-content: center;
 }
 </style>
