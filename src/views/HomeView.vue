@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TodoComp from '../components/TodoComp.vue';
+import { Todo } from './src/models/Todo.ts';
 
 const monTableau = ref<any[]>([]);
 

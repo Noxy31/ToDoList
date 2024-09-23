@@ -5,6 +5,7 @@ const props = defineProps<{
   todo: {
     done: boolean;
     label: string;
+    id: number;
   };
 }>();
 
