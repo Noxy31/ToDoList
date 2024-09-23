@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TodoComp from '../components/TodoComp.vue';
+
 const monTableau = ref<any[]>([]);
 
 onMounted(async () => {
@@ -9,13 +10,29 @@ onMounted(async () => {
   monTableau.value = [...todos];
 });
 
-const ajouterElement = () => {
-  monTableau.value.push({ todo: 'Nouvelle tache', done: false });
+const ajouterElement = async () => {
+  const nouvelleTache = { label: 'Nouvelle tâche', done: false };
+
+  const response = await fetch('http://localhost:3000/todos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(nouvelleTache)
+  });
+
+  if (response.ok) {
+    const nouvelleTacheAjoutee = await response.json();
+
+    monTableau.value.push(nouvelleTacheAjoutee);
+  } else {
+    console.error("Erreur lors de l'ajout de la tâche");
+  }
 };
 
 const onTodoInput = (newTodoValue: any, index: number) => {
   monTableau.value[index] = newTodoValue;
-  console.log('monTableau est mis a jour');
+  console.log('monTableau est mis à jour');
 };
 </script>
 
