@@ -10,6 +10,12 @@ const monTableau = ref([
   { todo: 'boire moins de café et travailler plus', done: false }
 ]);
 
+onMounted(async () => {
+  const todosRequest = await fetch('http://localhost:3000/todos');
+  const todos = await todosRequest.json();
+  monTableau.value = [...todos];
+});
+
 const ajouterElement = () => {
   monTableau.value.push({ todo: 'Nouvelle tache', done: false });
 };
