@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TodoComp from '../components/TodoComp.vue';
-import { Todo } from './src/models/Todo.ts';
+import { Todo } from '../models/Todo';
 
-const monTableau = ref<any[]>([]);
+const monTableau = ref<Todo[]>([]);
 
 onMounted(async () => {
   const todosRequest = await fetch('http://localhost:3000/todos');
-  const todos = await todosRequest.json();
+  const todos: Todo[] = await todosRequest.json();
   monTableau.value = [...todos];
 });
 
@@ -31,9 +31,25 @@ const ajouterElement = async () => {
   }
 };
 
-const onTodoInput = (newTodoValue: any, index: number) => {
+const deleteTodo = async (id: number, index: number) => {
+  await fetch(`http://localhost:3000/todos/${id}`, {
+    method: 'DELETE'
+  });
+
+  monTableau.value.splice(index, 1);
+  console.log('Todo supprimé');
+};
+
+const onTodoInput = async (newTodoValue: Todo, index: number) => {
   monTableau.value[index] = newTodoValue;
-  console.log('monTableau est mis à jour');
+  await fetch(`http://localhost:3000/todos/${newTodoValue.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newTodoValue)
+  });
+  console.log('monTableau est mis à jour et la modification est envoyée au serveur');
 };
 </script>
 
@@ -42,13 +58,10 @@ const onTodoInput = (newTodoValue: any, index: number) => {
     <h1>To Do List</h1>
     <button @click="ajouterElement" class="addButt">Ajouter une tâche</button>
     <br />
-
-    <TodoComp
-      v-for="(element, index) in monTableau"
-      :key="index"
-      :todo="element"
-      @onInput="onTodoInput($event, index)"
-    />
+    <div v-for="(element, index) in monTableau" :key="element.id">
+      <TodoComp :todo="element" @onInput="onTodoInput($event, index)" />
+      <button @click="deleteTodo(element.id, index)">Supprimer</button>
+    </div>
   </main>
 </template>
 
