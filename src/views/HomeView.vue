@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import TodoComp from '../components/TodoComp.vue';
-
-const monTableau = ref([
-  { todo: 'apprendre Vue JS', done: false },
-  { todo: 'apprendre a faire des boucles', done: false },
-  { todo: 'apprendre a griller des saucisses', done: false },
-  { todo: 'commencer a dominer le monde', done: false },
-  { todo: 'boire moins de café et travailler plus', done: false }
-]);
+const monTableau = ref<any[]>([]);
 
 onMounted(async () => {
   const todosRequest = await fetch('http://localhost:3000/todos');

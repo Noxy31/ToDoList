@@ -4,13 +4,13 @@ import { ref } from 'vue';
 const props = defineProps<{
   todo: {
     done: boolean;
-    todo: string;
+    label: string;
   };
 }>();
 
 const editMode = ref(false);
 
-const newValue = ref(props.todo.todo);
+const newValue = ref(props.todo.label);
 
 const emit = defineEmits(['onInput']);
 const onInput = (value: boolean) => {
@@ -24,14 +24,14 @@ const onConfirmText = () => {
 };
 const onCancelText = () => {
   editMode.value = false;
-  newValue.value = props.todo.todo;
+  newValue.value = props.todo.label;
 };
 </script>
 
 <template>
   <span v-if="!editMode">
     <span @click="editMode = !editMode">
-      {{ props.todo.todo }}
+      {{ props.todo.label }}
     </span>
     <input
       type="checkbox"
