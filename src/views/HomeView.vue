@@ -42,13 +42,15 @@ const deleteTodo = async (id: number, index: number) => {
 
 const onTodoInput = async (newTodoValue: Todo, index: number) => {
   monTableau.value[index] = newTodoValue;
+
   await fetch(`http://localhost:3000/todos/${newTodoValue.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(newTodoValue)
+    body: JSON.stringify({ label: newTodoValue.label, done: newTodoValue.done })
   });
+
   console.log('monTableau est mis à jour et la modification est envoyée au serveur');
 };
 </script>
