@@ -4,7 +4,7 @@ import About from '../views/AboutView.vue';
 
 // On crée les routes de nos vues ici
 const routes = [
-  { path: '/', component: Home },
+  { path: '/home', component: Home },
   { path: '/about', component: About }
 ];
 
