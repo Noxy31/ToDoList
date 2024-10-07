@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="categories">
     <h1>
       Cette page est vide pour l'instant mais un jour viendra il y aura quelque chose dedans, je le
       jure

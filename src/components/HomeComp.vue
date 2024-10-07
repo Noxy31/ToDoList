@@ -59,38 +59,48 @@ const onTodoInput = async (newTodoValue: Task, index: number) => {
 
 <template>
   <main>
-    <h1>To Do List</h1>
-    <button @click="ajouterElement" class="addButt">Ajouter une tâche</button>
-    <br />
-    <div v-for="(element, index) in monTableau" :key="element.idTask">
-      <TaskComp :task="element" @onInput="onTodoInput($event, index)" />
-      <button @click="deleteTodo(element.idTask, index)">Supprimer</button>
+    <div class="container">
+      <div class="button-container">
+        <button @click="ajouterElement" class="addButt">Create a new task</button>
+      </div>
+      <br />
+      <div class="task-list">
+        <div v-for="(element, index) in monTableau" :key="element.idTask">
+          <TaskComp :task="element" @onInput="onTodoInput($event, index)" />
+          <button @click="deleteTodo(element.idTask, index)">X</button>
+        </div>
+      </div>
     </div>
   </main>
 </template>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-h1 {
-  font-size: 7rem;
-  color: #dfdede;
-  text-align: center;
-  padding-right: 10vw;
-  padding-bottom: 5vh;
-}
-
-span {
-  font-size: 2rem;
-  justify-content: center;
-}
-
 main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-container {
+  margin-bottom: 20px;
+  margin-right: 10vw;
+}
+
+.task-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10vw;
 }
 
 .addButt {
@@ -103,8 +113,6 @@ main {
   font-size: 1.25rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-bottom: 5vh;
-  display: inline-block;
 }
 
 .addButt:hover {

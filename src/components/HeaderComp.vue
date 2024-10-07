@@ -2,7 +2,9 @@
   <header class="HeaderComp">
     <nav>
       <RouterLink to="/home">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/lists">Tasks Lists</RouterLink>
+      <RouterLink to="/categories">Categories</RouterLink>
+      <RouterLink to="/account">My account</RouterLink>
     </nav>
   </header>
 </template>

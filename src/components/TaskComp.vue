@@ -11,12 +11,12 @@ const newValue = ref(props.task.labelTask);
 const emit = defineEmits(['onInput']);
 const onInput = (value: boolean) => {
   console.log('TaskComponent a détecté un changement ', value);
-  emit('onInput', { ...props.task, done: value });
+  emit('onInput', { ...props.task, completionStateTask: value });
 };
 
 const onConfirmText = () => {
   editMode.value = false;
-  emit('onInput', { ...props.task, label: newValue.value });
+  emit('onInput', { ...props.task, labelTask: newValue.value });
 };
 const onCancelText = () => {
   editMode.value = false;
@@ -46,6 +46,16 @@ const onCancelText = () => {
 </template>
 
 <style lang="css" scoped>
+span {
+  display: flex;
+  align-items: center; /* Aligne les éléments verticalement */
+  justify-content: center; /* Centre horizontalement */
+  margin-bottom: 10px; /* Ajoute de l'espace entre les tâches */
+}
+
+button {
+  margin: 0 5px; /* Espace autour des boutons */
+}
 .done {
   color: green;
 }
