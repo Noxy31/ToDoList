@@ -5,7 +5,7 @@ import './assets/base.css';
 </script>
 
 <template>
-  <HeaderComp />
+  <HeaderComp v-if="$route.path !== '/'" />
   <main>
     <RouterView />
   </main>
