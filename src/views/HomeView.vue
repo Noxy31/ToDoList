@@ -42,7 +42,7 @@ const deleteTodo = async (id: number, index: number) => {
 const onTodoInput = async (newTodoValue: Task, index: number) => {
   monTableau.value[index] = newTodoValue;
 
-  await fetch(`http://localhost:3000/api/tasks/${newTodoValue.idTask}`, {
+  await fetch(`/api/tasks/${newTodoValue.idTask}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
