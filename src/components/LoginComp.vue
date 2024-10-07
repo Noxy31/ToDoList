@@ -13,7 +13,8 @@ const handleLogin = async () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email: email.value, password: password.value })
+      body: JSON.stringify({ email: email.value, password: password.value }),
+      credentials: 'include'
     });
 
     if (!response.ok) {
@@ -21,8 +22,6 @@ const handleLogin = async () => {
       throw new Error(errorData.message || 'Erreur lors de la connexion');
     }
 
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
     router.push('/home');
   } catch (error) {
     console.error(error);
