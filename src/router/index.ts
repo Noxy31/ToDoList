@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/HomeView.vue';
 import About from '../views/AboutView.vue';
 import Login from '../components/LoginComp.vue';
+import Cookies from 'js-cookie';
 
 // On crée les routes de nos vues ici
 const routes = [
@@ -15,12 +16,11 @@ const router = createRouter({
   routes
 });
 
-// On protège les routes avec beforeEach pour checker si un tilisateur est connecté
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token');
+  const isAuthenticated = !!Cookies.get('token');
 
   if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
-    next('/'); // Rediriger vers la page de login si l'utilisateur n'est pas authentifié
+    next('/');
   } else {
     next();
   }

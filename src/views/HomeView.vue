@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import TodoComp from '../components/TodoComp.vue';
-import { Todo } from '../models/Todo';
+import TaskComp from '../components/TaskComp.vue';
+import { Task } from '../models/Task';
 
-const monTableau = ref<Todo[]>([]);
+const monTableau = ref<Task[]>([]);
 
 onMounted(async () => {
-  const todosRequest = await fetch('http://localhost:3000/todos');
-  const todos: Todo[] = await todosRequest.json();
+  const todosRequest = await fetch('api/tasks');
+  const todos: Task[] = await todosRequest.json();
   monTableau.value = [...todos];
 });
 
 const ajouterElement = async () => {
-  const nouvelleTache = { label: 'Nouvelle tâche', done: false };
+  const nouvelleTache = { labelTask: 'Nouvelle tâche', done: false };
 
-  const response = await fetch('http://localhost:3000/todos', {
+  const response = await fetch('api/tasks', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -24,7 +24,6 @@ const ajouterElement = async () => {
 
   if (response.ok) {
     const nouvelleTacheAjoutee = await response.json();
-
     monTableau.value.push(nouvelleTacheAjoutee);
   } else {
     console.error("Erreur lors de l'ajout de la tâche");
@@ -32,23 +31,26 @@ const ajouterElement = async () => {
 };
 
 const deleteTodo = async (id: number, index: number) => {
-  await fetch(`http://localhost:3000/todos/${id}`, {
+  await fetch(`api/tasks/${id}`, {
     method: 'DELETE'
   });
 
   monTableau.value.splice(index, 1);
-  console.log('Todo supprimé');
+  console.log('Task supprimée');
 };
 
-const onTodoInput = async (newTodoValue: Todo, index: number) => {
+const onTodoInput = async (newTodoValue: Task, index: number) => {
   monTableau.value[index] = newTodoValue;
 
-  await fetch(`http://localhost:3000/todos/${newTodoValue.id}`, {
+  await fetch(`http://localhost:3000/api/tasks/${newTodoValue.idTask}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ label: newTodoValue.label, done: newTodoValue.done })
+    body: JSON.stringify({
+      labelTask: newTodoValue.labelTask,
+      done: newTodoValue.completionStateTask
+    })
   });
 
   console.log('monTableau est mis à jour et la modification est envoyée au serveur');
@@ -60,9 +62,9 @@ const onTodoInput = async (newTodoValue: Todo, index: number) => {
     <h1>To Do List</h1>
     <button @click="ajouterElement" class="addButt">Ajouter une tâche</button>
     <br />
-    <div v-for="(element, index) in monTableau" :key="element.id">
-      <TodoComp :todo="element" @onInput="onTodoInput($event, index)" />
-      <button @click="deleteTodo(element.id, index)">Supprimer</button>
+    <div v-for="(element, index) in monTableau" :key="element.idTask">
+      <TaskComp :task="element" @onInput="onTodoInput($event, index)" />
+      <button @click="deleteTodo(element.idTask, index)">Supprimer</button>
     </div>
   </main>
 </template>

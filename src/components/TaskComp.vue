@@ -1,37 +1,37 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Todo } from 'src/models/Todo';
+import { Task } from '@/models/Task';
 
-const props = defineProps<{ todo: Todo }>();
+const props = defineProps<{ task: Task }>();
 
 const editMode = ref(false);
 
-const newValue = ref(props.todo.label);
+const newValue = ref(props.task.labelTask);
 
 const emit = defineEmits(['onInput']);
 const onInput = (value: boolean) => {
-  console.log('TodoComponent a détecté un changement ', value);
-  emit('onInput', { ...props.todo, done: value });
+  console.log('TaskComponent a détecté un changement ', value);
+  emit('onInput', { ...props.task, done: value });
 };
 
 const onConfirmText = () => {
   editMode.value = false;
-  emit('onInput', { ...props.todo, label: newValue.value });
+  emit('onInput', { ...props.task, label: newValue.value });
 };
 const onCancelText = () => {
   editMode.value = false;
-  newValue.value = props.todo.label;
+  newValue.value = props.task.labelTask;
 };
 </script>
 
 <template>
   <span v-if="!editMode">
     <span @click="editMode = !editMode">
-      {{ props.todo.label }}
+      {{ props.task.labelTask }}
     </span>
     <input
       type="checkbox"
-      :checked="props.todo.done"
+      :checked="props.task.completionStateTask"
       @click="(event: any) => onInput(event.target?.checked)"
     />
     <br />
