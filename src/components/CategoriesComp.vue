@@ -1,8 +1,8 @@
-<script setup>
-import { useState } from './store'; // Assure-toi que c'est le bon chemin vers ton fichier de store
+<script>
+import { useState } from '../src/store/store.ts';
 
 const state = useState();
-const isAdmin = state.isAdmin; // Récupérer le statut d'administrateur
+const isAdmin = state.isAdmin;
 </script>
 
 <template>
@@ -10,7 +10,7 @@ const isAdmin = state.isAdmin; // Récupérer le statut d'administrateur
     <h1>Catégories</h1>
 
     <router-link v-if="isAdmin" to="/create-category">
-      <button>Créer une nouvelle catégorie</button>
+      <button>Create a new category</button>
     </router-link>
   </div>
 </template>

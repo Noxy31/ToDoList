@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/HomeComp.vue';
 import Account from '../components/AccountComp.vue';
 import Login from '../components/LoginComp.vue';
-import Categories from '../components/CategoriesComp.vue';
 import Lists from '../components/ListsComp.vue';
-import CreateListComp from '@/components/CreateListComp.vue';
+import CreateListComp from '../components/CreateListComp.vue';
 import CreateCategoryComp from '../components/CreateCategoryComp.vue';
+import Categories from '../components/CategoriesComp.vue';
 import Cookies from 'js-cookie';
 
 // On crée les routes de nos vues ici
