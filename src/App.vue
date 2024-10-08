@@ -2,6 +2,9 @@
 import { RouterView } from 'vue-router';
 import HeaderComp from './components/HeaderComp.vue';
 import './assets/base.css';
+import { provideState } from '../src/store/store';
+
+provideState();
 </script>
 
 <template>

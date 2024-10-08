@@ -67,7 +67,7 @@ const onTodoInput = async (newTodoValue: Task, index: number) => {
   <main>
     <div class="container">
       <div class="button-container">
-        <button @click="redirigerVersCreationListe" class="addButt">Create a new task</button>
+        <button @click="redirigerVersCreationListe" class="addButt">Create a List</button>
       </div>
       <br />
       <div class="task-list">
