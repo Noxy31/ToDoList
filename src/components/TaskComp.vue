@@ -48,13 +48,13 @@ const onCancelText = () => {
 <style lang="css" scoped>
 span {
   display: flex;
-  align-items: center; /* Aligne les éléments verticalement */
-  justify-content: center; /* Centre horizontalement */
-  margin-bottom: 10px; /* Ajoute de l'espace entre les tâches */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 button {
-  margin: 0 5px; /* Espace autour des boutons */
+  margin: 0 5px;
 }
 .done {
   color: green;

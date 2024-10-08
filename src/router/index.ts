@@ -4,6 +4,7 @@ import Account from '../components/AccountComp.vue';
 import Login from '../components/LoginComp.vue';
 import Categories from '../components/CategoriesComp.vue';
 import Lists from '../components/ListsComp.vue';
+import CreateListComp from '@/components/CreateListComp.vue';
 import Cookies from 'js-cookie';
 
 // On crée les routes de nos vues ici
@@ -12,6 +13,7 @@ const routes = [
   { path: '/home', component: Home, meta: { requiresAuth: true } },
   { path: '/account', component: Account, meta: { requiresAuth: true } },
   { path: '/lists', component: Lists, meta: { requiresAuth: true } },
+  { path: '/create-list', name: 'CreateList', component: CreateListComp, requiresAuth: true },
   { path: '/categories', component: Categories, meta: { requiresAuth: true } }
 ];
 

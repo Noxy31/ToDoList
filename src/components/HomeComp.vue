@@ -2,14 +2,20 @@
 import { ref, onMounted } from 'vue';
 import TaskComp from '../components/TaskComp.vue';
 import { Task } from '../models/Task';
+import { useRouter } from 'vue-router';
 
 const monTableau = ref<Task[]>([]);
+const router = useRouter();
 
 onMounted(async () => {
   const todosRequest = await fetch('api/tasks');
   const todos: Task[] = await todosRequest.json();
   monTableau.value = [...todos];
 });
+
+const redirigerVersCreationListe = () => {
+  router.push({ name: 'CreateList' });
+};
 
 const ajouterElement = async () => {
   const nouvelleTache = { labelTask: 'Nouvelle tâche', done: false };
@@ -61,7 +67,7 @@ const onTodoInput = async (newTodoValue: Task, index: number) => {
   <main>
     <div class="container">
       <div class="button-container">
-        <button @click="ajouterElement" class="addButt">Create a new task</button>
+        <button @click="redirigerVersCreationListe" class="addButt">Create a new task</button>
       </div>
       <br />
       <div class="task-list">
