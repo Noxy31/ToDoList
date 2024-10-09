@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useState } from '../store/store';
-
+import { computed } from 'vue';
 const state = useState();
 
-const isAdmin = state.isAdmin;
+const isAdmin = computed(() => state.isAdmin);
 </script>
 
 <template>

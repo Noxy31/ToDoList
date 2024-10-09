@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuth } from '../store/auth'; // Importation de useAuth
+import { useAuth } from '../store/auth';
+import { useState } from '../store/store';
 
-// Variables pour stocker les valeurs du formulaire
 const email = ref('');
 const password = ref('');
 const router = useRouter();
-const { login } = useAuth(); // Récupère la fonction login de useAuth
+const { login } = useAuth();
+const state = useState();
 
-// Fonction de gestion de la connexion
 const handleLogin = async () => {
   try {
     const response = await fetch('api/users/login', {
@@ -25,10 +25,13 @@ const handleLogin = async () => {
       throw new Error(errorData.message || 'Erreur lors de la connexion');
     }
 
-    // Appelle la fonction `login` pour mettre à jour l'état d'authentification
+    const userData = await response.json();
+    console.log('Utilisateur connecté :', userData);
+
+    state.setAdminStatus(userData.user.isAdmin === 1);
+
     login();
 
-    // Redirection vers la page d'accueil après connexion
     router.push('/home');
   } catch (error) {
     console.error(error);

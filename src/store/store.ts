@@ -2,12 +2,17 @@ import { inject, reactive, provide } from 'vue';
 
 interface State {
   isAdmin: boolean;
+  setAdminStatus: (status: boolean) => void; // Déclare la méthode pour mettre à jour isAdmin
 }
 
 export const createState = (): State => {
-  return reactive({
-    isAdmin: false
+  const state = reactive({
+    isAdmin: false,
+    setAdminStatus: (status: boolean) => {
+      state.isAdmin = status;
+    }
   });
+  return state;
 };
 
 export const provideState = () => {

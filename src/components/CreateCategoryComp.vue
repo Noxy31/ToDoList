@@ -28,13 +28,21 @@ const createCategory = async () => {
 </script>
 
 <template>
-  <div>
-    <h1>Créer une nouvelle catégorie</h1>
+  <div class="container">
+    <h1>Create a new category</h1>
     <form @submit.prevent="createCategory">
       <label for="categoryName">Category name :</label>
       <input type="text" v-model="categoryName" id="categoryName" required />
-
-      <button type="submit">Créer</button>
+      <button type="submit">Create</button>
     </form>
   </div>
 </template>
+
+<style scoped>
+.container {
+  font-size: 1rem;
+  justify-content: center;
+  margin-right: 5vw;
+  margin-top: 8vh;
+}
+</style>
