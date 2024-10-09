@@ -2,14 +2,16 @@ import { inject, reactive, provide } from 'vue';
 
 interface State {
   isAdmin: boolean;
-  setAdminStatus: (status: boolean) => void; // Déclare la méthode pour mettre à jour isAdmin
+  setAdminStatus: (status: boolean) => void;
 }
 
 export const createState = (): State => {
+  const savedIsAdmin = localStorage.getItem('isAdmin');
   const state = reactive({
-    isAdmin: false,
+    isAdmin: savedIsAdmin ? JSON.parse(savedIsAdmin) : false,
     setAdminStatus: (status: boolean) => {
       state.isAdmin = status;
+      localStorage.setItem('isAdmin', JSON.stringify(status));
     }
   });
   return state;

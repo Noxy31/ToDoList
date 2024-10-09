@@ -22,19 +22,19 @@ const handleLogin = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
+      alert('Incorrect Password');
       throw new Error(errorData.message || 'Erreur lors de la connexion');
     }
 
     const userData = await response.json();
     console.log('Utilisateur connecté :', userData);
 
-    const isAdmin = userData.user.isAdmin === 1;
-    state.setAdminStatus(isAdmin);
+    const isAdmin = Boolean(userData.user.isAdmin);
 
-    localStorage.setItem('isAdmin', JSON.stringify(isAdmin)); // permets que l'état de isAdmin persiste meme aprés avoir actualisé
+    state.setAdminStatus(isAdmin);
+    localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
 
     login();
-
     router.push('/home');
   } catch (error) {
     console.error(error);
