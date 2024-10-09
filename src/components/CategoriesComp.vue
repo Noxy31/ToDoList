@@ -90,8 +90,8 @@ onMounted(() => {
       <button class="catButton">Create a new category</button>
     </router-link>
     <div v-if="isAdmin">
-      <ul>
-        <li v-for="category in categories" :key="category.idCategory">
+      <ul class="list">
+        <div v-for="category in categories" :key="category.idCategory">
           {{ category.labelCategory }}
           <div>
             <select v-model="selectedUser">
@@ -102,7 +102,7 @@ onMounted(() => {
             </select>
             <button @click="assignUserToCategory(category.idCategory)">Assign user</button>
           </div>
-        </li>
+        </div>
       </ul>
     </div>
   </div>
@@ -115,8 +115,8 @@ h1 {
 .container {
   font-size: 2rem;
   justify-content: center;
-  margin-top: 8vh;
-  margin-right: 6vw;
+  margin-top: 5vh;
+  margin-right: 5vw;
 }
 
 .catButton {
@@ -131,9 +131,10 @@ h1 {
   transition: background-color 0.3s;
   margin-bottom: 5vh;
 }
-
+.list {
+  margin-right: 2vw;
+  margin-bottom: 5vh;
+}
 select {
-  margin-left: 10px;
-  margin-right: 10px;
 }
 </style>

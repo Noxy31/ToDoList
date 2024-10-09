@@ -88,25 +88,21 @@ main {
   flex-direction: column;
   text-align: center;
   width: 100%;
+  margin-right: 5vw;
 }
 
 .container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-right: 5vw;
 }
 
 .button-container {
   margin-bottom: 20px;
-  margin-right: 10vw;
 }
 
 .task-list {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-right: 10vw;
 }
 
 .addButt {

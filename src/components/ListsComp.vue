@@ -89,6 +89,6 @@ export default defineComponent({
   font-size: 2rem;
   justify-content: center;
   margin-right: 5vw;
-  margin-top: 8vh;
+  margin-top: 5vh;
 }
 </style>

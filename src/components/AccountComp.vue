@@ -20,11 +20,11 @@ const handleLogout = () => {
 <style scoped>
 .container {
   margin-right: 5vw;
+  margin-top: 5vh;
 }
 
 h1 {
   font-size: 3rem;
-  color: rgb(234, 234, 234);
   margin-bottom: 5vh;
 }
 
