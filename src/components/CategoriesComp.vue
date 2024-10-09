@@ -1,13 +1,14 @@
-<script>
-import { useState } from '../src/store/store.ts';
+<script setup lang="ts">
+import { useState } from '../store/store';
 
 const state = useState();
+
 const isAdmin = state.isAdmin;
 </script>
 
 <template>
-  <div>
-    <h1>Catégories</h1>
+  <div class="container">
+    <h1>Categories</h1>
 
     <router-link v-if="isAdmin" to="/create-category">
       <button>Create a new category</button>
@@ -15,7 +16,7 @@ const isAdmin = state.isAdmin;
   </div>
 </template>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
@@ -24,8 +25,10 @@ const isAdmin = state.isAdmin;
   }
 }
 
-h1 {
+.container {
   font-size: 2rem;
   justify-content: center;
+  margin-top: 8vh;
+  margin-right: 6vw;
 }
 </style>

@@ -68,9 +68,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <h1>Mes Listes</h1>
-    <div v-if="loading">Chargement des listes...</div>
+  <div class="container">
+    <h1>My Lists</h1>
+    <div v-if="loading">Loading lists...</div>
     <ul v-if="!loading && lists.length">
       <li v-for="list in lists" :key="list.idList">
         <h3>{{ list.labelList }}</h3>
@@ -79,11 +79,16 @@ export default defineComponent({
       </li>
     </ul>
     <div v-else>
-      <p>Aucune liste trouvée.</p>
+      <p>No list found.</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Ajoutez vos styles ici */
+.container {
+  font-size: 2rem;
+  justify-content: center;
+  margin-right: 5vw;
+  margin-top: 8vh;
+}
 </style>
