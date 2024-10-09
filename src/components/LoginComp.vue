@@ -28,7 +28,10 @@ const handleLogin = async () => {
     const userData = await response.json();
     console.log('Utilisateur connecté :', userData);
 
-    state.setAdminStatus(userData.user.isAdmin === 1);
+    const isAdmin = userData.user.isAdmin === 1;
+    state.setAdminStatus(isAdmin);
+
+    localStorage.setItem('isAdmin', JSON.stringify(isAdmin)); // permets que l'état de isAdmin persiste meme aprés avoir actualisé
 
     login();
 
