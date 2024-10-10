@@ -1,13 +1,19 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'ListsComp',
-  setup() {
-    const lists = ref<any[]>([]);
-    const loading = ref(true);
-
-    const fetchUserId = async () => {
+  data() {
+    return {
+      lists: [] as any[],
+      loading: true
+    };
+  },
+  methods: {
+    async redirigerVersCreationListe() {
+      this.$router.push({ name: 'CreateList' });
+    },
+    async fetchUserId() {
       try {
         const response = await fetch('api/users/getUserId', {
           method: 'GET',
@@ -19,17 +25,15 @@ export default defineComponent({
         }
 
         const { id } = await response.json();
-
         console.log(`L'ID de l'utilisateur actuellement connecté est : ${id}`);
         return id;
       } catch (error) {
         console.error(error);
         return null;
       }
-    };
-
-    const fetchLists = async () => {
-      const userId = await fetchUserId();
+    },
+    async fetchLists() {
+      const userId = await this.fetchUserId();
       if (!userId) return;
 
       try {
@@ -43,26 +47,20 @@ export default defineComponent({
         }
 
         const data = await response.json();
-        lists.value = data;
+        this.lists = data;
       } catch (error) {
         console.error(error);
       } finally {
-        loading.value = false;
+        this.loading = false;
       }
-    };
-
-    const formatDate = (timestamp: string) => {
+    },
+    formatDate(timestamp: string) {
       const date = new Date(timestamp);
       return date.toLocaleDateString();
-    };
-
-    onMounted(fetchLists);
-
-    return {
-      lists,
-      loading,
-      formatDate
-    };
+    }
+  },
+  mounted() {
+    this.fetchLists();
   }
 });
 </script>
@@ -70,6 +68,9 @@ export default defineComponent({
 <template>
   <div class="container">
     <h1>My Lists</h1>
+    <div class="button-container">
+      <button @click="redirigerVersCreationListe" class="addButt">Create a List</button>
+    </div>
     <div v-if="loading">Loading lists...</div>
     <ul v-if="!loading && lists.length">
       <li v-for="list in lists" :key="list.idList">
