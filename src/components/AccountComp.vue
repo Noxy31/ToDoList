@@ -40,6 +40,10 @@ const handleLogout = () => {
   Cookies.remove('token');
   router.push('/');
 };
+
+const goToManageUsers = () => {
+  router.push('/manage-users');
+};
 </script>
 
 <template>
@@ -63,6 +67,8 @@ const handleLogout = () => {
         <router-link to="/create-user">
           <button class="create-user-button">Créer un nouvel utilisateur</button>
         </router-link>
+
+        <button @click="goToManageUsers" class="manage-user-button">Manage Users</button>
       </div>
     </div>
   </div>
@@ -111,7 +117,7 @@ button {
   font-size: 1.25rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 10vh;
+  margin-top: 7vh;
 }
 
 .separator {
@@ -130,7 +136,14 @@ button {
 .create-user-button {
   background-color: #ececec;
   color: black;
-  text-align: center;
-  margin-right: 3vw;
+  font-size: 1rem;
+  margin-right: 12.5vw;
+}
+
+.manage-user-button {
+  background-color: #ececec;
+  color: black;
+  font-size: 1rem;
+  margin-right: 17.2vw;
 }
 </style>

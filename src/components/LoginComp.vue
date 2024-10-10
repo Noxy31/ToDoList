@@ -22,7 +22,7 @@ const handleLogin = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      alert('Incorrect Password');
+      alert(errorData.message || 'Erreur lors de la connexion');
       throw new Error(errorData.message || 'Erreur lors de la connexion');
     }
 
@@ -30,9 +30,12 @@ const handleLogin = async () => {
     console.log('Utilisateur connecté :', userData);
 
     const isAdmin = Boolean(userData.user.isAdmin);
+    const isAccEnabled = Boolean(userData.user.isAccEnabled);
 
     state.setAdminStatus(isAdmin);
+    state.setAccountStatus(isAccEnabled);
     localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+    localStorage.setItem('isAccEnabled', JSON.stringify(isAccEnabled));
 
     login();
     router.push('/home');

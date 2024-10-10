@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import TaskComp from '../components/TaskComp.vue';
 import { Task } from '../models/Task';
 import { useRouter } from 'vue-router';
 
@@ -16,51 +15,6 @@ onMounted(async () => {
 const redirigerVersCreationListe = () => {
   router.push({ name: 'CreateList' });
 };
-
-const ajouterElement = async () => {
-  const nouvelleTache = { labelTask: 'Nouvelle tâche', done: false };
-
-  const response = await fetch('api/tasks', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(nouvelleTache)
-  });
-
-  if (response.ok) {
-    const nouvelleTacheAjoutee = await response.json();
-    monTableau.value.push(nouvelleTacheAjoutee);
-  } else {
-    console.error("Erreur lors de l'ajout de la tâche");
-  }
-};
-
-const deleteTodo = async (id: number, index: number) => {
-  await fetch(`api/tasks/${id}`, {
-    method: 'DELETE'
-  });
-
-  monTableau.value.splice(index, 1);
-  console.log('Task supprimée');
-};
-
-const onTodoInput = async (newTodoValue: Task, index: number) => {
-  monTableau.value[index] = newTodoValue;
-
-  await fetch(`/api/tasks/${newTodoValue.idTask}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      labelTask: newTodoValue.labelTask,
-      done: newTodoValue.completionStateTask
-    })
-  });
-
-  console.log('monTableau est mis à jour et la modification est envoyée au serveur');
-};
 </script>
 
 <template>
@@ -70,12 +24,6 @@ const onTodoInput = async (newTodoValue: Task, index: number) => {
         <button @click="redirigerVersCreationListe" class="addButt">Create a List</button>
       </div>
       <br />
-      <div class="task-list">
-        <div v-for="(element, index) in monTableau" :key="element.idTask">
-          <TaskComp :task="element" @onInput="onTodoInput($event, index)" />
-          <button @click="deleteTodo(element.idTask, index)">X</button>
-        </div>
-      </div>
     </div>
   </main>
 </template>

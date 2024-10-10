@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useState } from '../store/store';
 
 const categories = ref<any[]>([]);
+const userCategories = ref<any[]>([]); // Catégories affectées à l'utilisateur
 const users = ref<any[]>([]);
 const selectedUser = ref<number | null>(null);
 const state = useState();
@@ -26,6 +27,26 @@ const fetchCategories = async () => {
     categories.value = data;
   } catch (error) {
     console.error('Erreur lors de la récupération des catégories :', error);
+  }
+};
+
+const fetchUserCategories = async () => {
+  try {
+    const response = await fetch('api/categories/users-categories', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des catégories de l’utilisateur');
+    }
+
+    const data = await response.json();
+    userCategories.value = data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des catégories de l’utilisateur :', error);
   }
 };
 
@@ -76,19 +97,23 @@ const assignUserToCategory = async (idCategory: number) => {
 };
 
 onMounted(() => {
+  fetchCategories();
   if (isAdmin.value) {
-    fetchCategories();
     fetchUsers();
+  } else {
+    fetchUserCategories();
   }
 });
 </script>
 
 <template>
   <div class="container">
-    <h1>Categories</h1>
+    <h1>{{ isAdmin ? 'Categories' : 'My Categories' }}</h1>
+
     <router-link v-if="isAdmin" to="/create-category">
       <button class="catButton">Create a new category</button>
     </router-link>
+
     <div v-if="isAdmin">
       <ul class="list">
         <div v-for="category in categories" :key="category.idCategory">
@@ -105,15 +130,24 @@ onMounted(() => {
         </div>
       </ul>
     </div>
+
+    <div v-else>
+      <div class="categories-container">
+        <div v-for="category in userCategories" :key="category.idCategory" class="category-card">
+          <h2>{{ category.labelCategory }}</h2>
+          <p>Lists:</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 h1 {
   margin-bottom: 5vh;
+  font-size: 3rem;
 }
 .container {
-  font-size: 2rem;
   justify-content: center;
   margin-top: 5vh;
   margin-right: 5vw;
@@ -131,10 +165,41 @@ h1 {
   transition: background-color 0.3s;
   margin-bottom: 5vh;
 }
+
 .list {
-  margin-right: 2vw;
+  font-size: 2rem;
+  margin-right: 2.2vw;
   margin-bottom: 5vh;
 }
-select {
+
+.categories-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  justify-content: left;
+}
+
+.category-card {
+  flex-direction: column;
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 2 2px 4px rgba(255, 255, 255, 0.1);
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.category-card h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.category-card p {
+  margin: 10px 0 0 0; /* Espacement sous le texte "Lists :" */
+  font-size: 1.5rem; /* Taille du texte "Lists :" */
 }
 </style>

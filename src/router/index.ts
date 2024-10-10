@@ -7,6 +7,7 @@ import CreateListComp from '../components/CreateListComp.vue';
 import CreateCategoryComp from '../components/CreateCategoryComp.vue';
 import CategoriesComp from '../components/CategoriesComp.vue';
 import CreateUserComp from '@/components/CreateUserComp.vue';
+import ManageUserComp from '@/components/ManageUserComp.vue';
 import NotFound from '../components/NotFoundComp.vue';
 import Cookies from 'js-cookie';
 import { useState } from '../store/store';
@@ -14,19 +15,52 @@ import { useState } from '../store/store';
 // On crée les routes de nos vues ici
 const routes = [
   { path: '/', component: Login },
-  { path: '/home', component: Home, meta: { requiresAuth: true } },
-  { path: '/account', component: Account, meta: { requiresAuth: true } },
-  { path: '/lists', component: Lists, meta: { requiresAuth: true } },
-  { path: '/create-list', name: 'CreateList', component: CreateListComp, requiresAuth: true },
-  { path: '/categories', component: CategoriesComp, meta: { requiresAuth: true } },
+  {
+    path: '/home',
+    component: Home,
+    name: 'Home',
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/lists',
+    name: 'Lists',
+    component: Lists,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/create-list',
+    name: 'CreateList',
+    component: CreateListComp,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: CategoriesComp,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
   {
     path: '/create-category',
+    name: 'Create Categories',
     component: CreateCategoryComp,
     meta: { requiresAuth: true, requiresAdmin: true }
   },
   {
     path: '/create-user',
+    name: 'Create User',
     component: CreateUserComp,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/manage-users',
+    name: 'Manage Users',
+    component: ManageUserComp,
     meta: { requiresAuth: true, requiresAdmin: true }
   },
   { path: '/:pathMatch(.*)*', component: NotFound }
@@ -37,14 +71,25 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const isAuthenticated = !!Cookies.get('token');
+  const state = useState();
+  const isAdmin = state.isAdmin;
+  const isAccEnabled = state.isAccEnabled;
 
-  const isAdmin = JSON.parse(localStorage.getItem('isAdmin') || 'false');
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next('/');
+      return;
+    }
 
-  if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
-    next('/');
-  } else if (to.matched.some((record) => record.meta.requiresAdmin) && !isAdmin) {
+    if (to.matched.some((record) => record.meta.requiresEnabled) && !isAccEnabled) {
+      next('/');
+      return;
+    }
+  }
+
+  if (to.matched.some((record) => record.meta.requiresAdmin) && !isAdmin) {
     next('/not-found');
   } else {
     next();
