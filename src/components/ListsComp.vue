@@ -10,7 +10,7 @@ export default defineComponent({
     };
   },
   methods: {
-    async redirigerVersCreationListe() {
+    async redirectCreationList() {
       this.$router.push({ name: 'CreateList' });
     },
     async fetchUserId() {
@@ -69,7 +69,7 @@ export default defineComponent({
   <div class="container">
     <h1>My Lists</h1>
     <div class="button-container">
-      <button @click="redirigerVersCreationListe" class="addButt">Create a List</button>
+      <button @click="redirectCreationList" class="addButt">Create a List</button>
     </div>
     <div v-if="loading">Loading lists...</div>
     <ul v-if="!loading && lists.length">
@@ -91,5 +91,10 @@ export default defineComponent({
   justify-content: center;
   margin-right: 5vw;
   margin-top: 5vh;
+}
+
+h1 {
+  margin-bottom: 5vh;
+  font-size: 3rem;
 }
 </style>
