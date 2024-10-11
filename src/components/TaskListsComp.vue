@@ -2,19 +2,18 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-// Définir une interface pour les tâches
 interface Task {
-  idTask: string; // Assurez-vous que le type correspond à celui de votre base de données
+  idTask: string;
   labelTask: string;
-  dueTask: string; // Ou Date si vous préférez manipuler des objets Date
+  dueTask: string;
   completionStateTask: boolean;
   lastUpdateMessage: string;
-  lastUpdateTime?: string; // Ajoutez cet attribut pour l'état de complétion
+  lastUpdateTime?: string;
 }
 
 const formatDateTime = (timestamp: string) => {
   const date = new Date(timestamp);
-  return date.toLocaleString(); // Cela retournera une chaîne contenant la date et l'heure
+  return date.toLocaleString();
 };
 
 export default defineComponent({
@@ -28,10 +27,10 @@ export default defineComponent({
       creatorName: ''
     });
 
-    const tasks = ref<Task[]>([]); // Spécifiez le type ici
+    const tasks = ref<Task[]>([]);
 
     const fetchListDetails = async () => {
-      const listId = route.params.idList as string; // Utilisation de type assertion
+      const listId = route.params.idList as string; // assertion type usage
       try {
         const response = await fetch(`/api/list/tasklist/${listId}`);
         if (!response.ok) {
@@ -40,7 +39,6 @@ export default defineComponent({
         const data = await response.json();
         list.value = data;
 
-        // Récupérer les tâches après avoir obtenu les détails de la liste
         fetchTasks(listId);
       } catch (error) {
         console.error(error);
@@ -66,7 +64,7 @@ export default defineComponent({
     };
 
     const addTask = () => {
-      const listId = route.params.idList as string; // Utilisation de type assertion
+      const listId = route.params.idList as string; // assertion type usage
       router.push({ name: 'CreateTask', params: { idList: listId } });
     };
 
@@ -77,7 +75,7 @@ export default defineComponent({
 
     const toggleTaskCompletion = async (task: Task) => {
       const newCompletionState = !task.completionStateTask;
-      const listId = route.params.idList as string; // Récupérer l'ID de la liste pour la mise à jour
+      const listId = route.params.idList as string;
       try {
         const response = await fetch(`/api/tasks/${task.idTask}`, {
           method: 'PUT',
@@ -91,12 +89,10 @@ export default defineComponent({
           throw new Error('Failed to update task');
         }
 
-        // Mettre à jour l'état de la tâche dans le tableau
         const updatedTask = tasks.value.find((t) => t.idTask === task.idTask);
         if (updatedTask) {
           updatedTask.completionStateTask = newCompletionState;
 
-          // Rafraîchir les tâches pour mettre à jour le message de dernière mise à jour
           await fetchTasks(listId);
         }
       } catch (error) {
@@ -110,10 +106,10 @@ export default defineComponent({
 
     return {
       list,
-      tasks, // Renvoyer les tâches pour l'accès dans le template
+      tasks,
       formatDate,
       addTask,
-      toggleTaskCompletion // Renvoyer la méthode pour qu'elle soit accessible dans le template
+      toggleTaskCompletion
     };
   }
 });
@@ -136,7 +132,6 @@ export default defineComponent({
         }}</strong>
         - <span class="due-date">Due on: {{ formatDate(task.dueTask) }}</span>
 
-        <!-- Toggle pour changer l'état de la tâche -->
         <label class="toggle">
           <input
             type="checkbox"
@@ -192,11 +187,11 @@ button:hover {
 }
 
 .task-label {
-  font-size: 1.25rem; /* Agrandir la taille des labels des tâches */
+  font-size: 1.25rem;
 }
 
 li {
-  padding: 10px 0; /* Ajouter un padding entre les tâches */
+  padding: 10px 0;
 }
 
 .toggle {
@@ -204,7 +199,7 @@ li {
   display: inline-block;
   width: 40px;
   height: 20px;
-  margin-left: 10px; /* Ajout d'un espacement entre la tâche et le toggle */
+  margin-left: 10px;
 }
 
 .toggle input {

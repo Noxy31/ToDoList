@@ -119,18 +119,16 @@ export default defineComponent({
 <style scoped>
 .container {
   font-size: 1.6rem;
-  margin: 2vh 5vw;
+  margin-top: 5vh;
 }
 
 h1 {
   font-size: 3rem;
   margin-bottom: 4vh;
-  margin-right: 5vw;
 }
 
 .button-container {
   margin-bottom: 8vh;
-  margin-right: 5vw;
 }
 
 .lists-wrapper {

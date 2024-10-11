@@ -5,6 +5,7 @@ import { useState } from '../store/store';
 const categories = ref<any[]>([]);
 const userCategories = ref<any[]>([]);
 const users = ref<any[]>([]);
+const lists = ref<any[]>([]);
 const selectedUser = ref<number | null>(null);
 const state = useState();
 
@@ -70,6 +71,26 @@ const fetchUsers = async () => {
   }
 };
 
+const fetchUserLists = async () => {
+  try {
+    const response = await fetch('api/lists/user-categories-lists', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des listes de l’utilisateur');
+    }
+
+    const data = await response.json();
+    lists.value = data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des listes de l’utilisateur :', error);
+  }
+};
+
 const assignUserToCategory = async (idCategory: number) => {
   if (selectedUser.value) {
     try {
@@ -98,6 +119,7 @@ const assignUserToCategory = async (idCategory: number) => {
 
 onMounted(() => {
   fetchCategories();
+  fetchUserLists();
   if (isAdmin.value) {
     fetchUsers();
   } else {
@@ -136,6 +158,13 @@ onMounted(() => {
         <div v-for="category in userCategories" :key="category.idCategory" class="category-card">
           <h2>{{ category.labelCategory }}</h2>
           <p>Lists:</p>
+          <ul>
+            <li v-for="list in category.lists" :key="list.idList">
+              <router-link class="list-link" :to="`/task-lists/${list.idList}`">{{
+                list.labelList
+              }}</router-link>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -147,10 +176,10 @@ h1 {
   margin-bottom: 5vh;
   font-size: 3rem;
 }
+
 .container {
   justify-content: center;
   margin-top: 5vh;
-  margin-right: 5vw;
 }
 
 .catButton {
@@ -185,7 +214,7 @@ h1 {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  box-shadow: 2 2px 4px rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 2px 4px rgba(255, 255, 255, 0.1);
   min-height: 60vh;
   display: flex;
   flex-direction: column;
@@ -201,5 +230,20 @@ h1 {
 .category-card p {
   margin: 10px 0 0 0;
   font-size: 1.5rem;
+}
+
+.list-item {
+  margin-bottom: 10px;
+}
+
+.list-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: transform 0.3s;
+}
+
+.list-link:hover {
+  transform: scale(1.2);
 }
 </style>

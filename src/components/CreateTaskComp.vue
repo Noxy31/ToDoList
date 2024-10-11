@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import Cookies from 'js-cookie'; // Importez js-cookie
+import Cookies from 'js-cookie';
 import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
