@@ -64,6 +64,9 @@ export default defineComponent({
     formatDate(timestamp: string) {
       const date = new Date(timestamp);
       return date.toLocaleDateString();
+    },
+    redirectToTaskList(listId: number) {
+      this.$router.push({ name: 'TaskListsComp', params: { idList: listId } });
     }
   },
   mounted() {
@@ -84,8 +87,9 @@ export default defineComponent({
         <div class="list-grid">
           <div
             class="list-card"
-            v-for="list in lists.filter((list) => !list.isPersonnal)"
+            v-for="list in publicLists"
             :key="list.idList"
+            @click="redirectToTaskList(list.idList)"
           >
             <h3>{{ list.labelList }}</h3>
             <p>Created on: {{ formatDate(list.listCreationTime) }}</p>
@@ -98,9 +102,10 @@ export default defineComponent({
       <div class="personal-lists">
         <h2>Personnal Lists</h2>
         <div
-          v-for="list in lists.filter((list) => list.isPersonnal)"
+          v-for="list in personalLists"
           :key="list.idList"
           class="list-card"
+          @click="redirectToTaskList(list.idList)"
         >
           <h3>{{ list.labelList }}</h3>
           <p>Created on: {{ formatDate(list.listCreationTime) }}</p>
@@ -110,6 +115,7 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
 <style scoped>
 .container {
   font-size: 1.6rem;
@@ -166,6 +172,15 @@ h1 {
   text-align: left;
   margin-bottom: 1rem;
   margin-left: 2vw;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+}
+
+.list-card:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.05);
+  cursor: pointer;
 }
 
 .list-card h3 {

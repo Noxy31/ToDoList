@@ -4,6 +4,8 @@ import Account from '../components/AccountComp.vue';
 import Login from '../components/LoginComp.vue';
 import Lists from '../components/ListsComp.vue';
 import CreateListComp from '../components/CreateListComp.vue';
+import TaskListsComp from '@/components/TaskListsComp.vue';
+import CreateTaskComp from '../components/CreateTaskComp.vue';
 import CreateCategoryComp from '../components/CreateCategoryComp.vue';
 import CategoriesComp from '../components/CategoriesComp.vue';
 import CreateUserComp from '@/components/CreateUserComp.vue';
@@ -58,10 +60,23 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true }
   },
   {
+    path: '/task-lists/:idList',
+    name: 'TaskListsComp',
+    component: TaskListsComp,
+    props: true,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/create-task/:idList',
+    name: 'CreateTask',
+    component: CreateTaskComp,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
     path: '/manage-users',
     name: 'Manage Users',
     component: ManageUserComp,
-    meta: { requiresAuth: true, requiresAdmin: true }
+    meta: { requiresAuth: true, requiresAdmin: true, requiresEnabled: true }
   },
   { path: '/:pathMatch(.*)*', component: NotFound }
 ];
