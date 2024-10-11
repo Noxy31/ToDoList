@@ -5,7 +5,6 @@ import { useState } from '../store/store';
 const categories = ref<any[]>([]);
 const userCategories = ref<any[]>([]);
 const users = ref<any[]>([]);
-const lists = ref<any[]>([]);
 const selectedUser = ref<number | null>(null);
 const state = useState();
 
@@ -51,6 +50,26 @@ const fetchUserCategories = async () => {
   }
 };
 
+const fetchAllCategories = async () => {
+  try {
+    const response = await fetch('api/categories/all-categories-lists', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des catégories de l’utilisateur');
+    }
+
+    const data = await response.json();
+    categories.value = data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des catégories de l’utilisateur :', error);
+  }
+};
+
 const fetchUsers = async () => {
   try {
     const response = await fetch('api/users', {
@@ -68,26 +87,6 @@ const fetchUsers = async () => {
     users.value = data;
   } catch (error) {
     console.error('Erreur lors de la récupération des utilisateurs :', error);
-  }
-};
-
-const fetchUserLists = async () => {
-  try {
-    const response = await fetch('api/lists/user-categories-lists', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des listes de l’utilisateur');
-    }
-
-    const data = await response.json();
-    lists.value = data;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des listes de l’utilisateur :', error);
   }
 };
 
@@ -117,11 +116,37 @@ const assignUserToCategory = async (idCategory: number) => {
   }
 };
 
+const unassignUserFromCategory = async (idCategory: number) => {
+  if (selectedUser.value) {
+    try {
+      const response = await fetch(`api/users/unassign-user`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idUser: selectedUser.value, idCategory })
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la désassignation de l'utilisateur");
+      }
+
+      const data = await response.json();
+      alert(data.message);
+    } catch (error) {
+      console.error("Erreur lors de la désassignation de l'utilisateur :", error);
+      alert("Erreur lors de la désassignation de l'utilisateur.");
+    }
+  } else {
+    alert('Veuillez sélectionner un utilisateur.');
+  }
+};
+
 onMounted(() => {
   fetchCategories();
-  fetchUserLists();
   if (isAdmin.value) {
     fetchUsers();
+    fetchAllCategories();
   } else {
     fetchUserCategories();
   }
@@ -130,17 +155,22 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <h1>{{ isAdmin ? 'Categories' : 'My Categories' }}</h1>
+    <h1>{{ isAdmin ? 'All Categories' : 'My Categories' }}</h1>
 
     <router-link v-if="isAdmin" to="/create-category">
       <button class="catButton">Create a new category</button>
     </router-link>
 
-    <div v-if="isAdmin">
-      <ul class="list">
-        <div v-for="category in categories" :key="category.idCategory">
-          {{ category.labelCategory }}
-          <div>
+    <div v-if="isAdmin || !isAdmin">
+      <div class="categories-container">
+        <div
+          v-for="category in isAdmin ? categories : userCategories"
+          :key="category.idCategory"
+          class="category-card"
+        >
+          <h2>{{ category.labelCategory }}</h2>
+
+          <div v-if="isAdmin">
             <select v-model="selectedUser">
               <option disabled value="">Select user</option>
               <option v-for="user in users" :key="user.idUser" :value="user.idUser">
@@ -148,21 +178,15 @@ onMounted(() => {
               </option>
             </select>
             <button @click="assignUserToCategory(category.idCategory)">Assign user</button>
+            <button @click="unassignUserFromCategory(category.idCategory)">Unassign user</button>
           </div>
-        </div>
-      </ul>
-    </div>
 
-    <div v-else>
-      <div class="categories-container">
-        <div v-for="category in userCategories" :key="category.idCategory" class="category-card">
-          <h2>{{ category.labelCategory }}</h2>
           <p>Lists:</p>
           <ul>
             <li v-for="list in category.lists" :key="list.idList">
-              <router-link class="list-link" :to="`/task-lists/${list.idList}`">{{
-                list.labelList
-              }}</router-link>
+              <router-link class="list-link" :to="`/task-lists/${list.idList}`">
+                {{ list.labelList }}
+              </router-link>
             </li>
           </ul>
         </div>
@@ -205,7 +229,8 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
-  justify-content: left;
+  justify-content: space-between; /* Modification ici */
+  gap: 20px; /* Espacement entre les cartes */
 }
 
 .category-card {
@@ -220,6 +245,7 @@ h1 {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  width: 30%; /* Ajustement de la largeur des cartes */
 }
 
 .category-card h2 {
