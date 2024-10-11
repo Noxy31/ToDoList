@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useState } from '../store/store';
 
 const categories = ref<any[]>([]);
-const userCategories = ref<any[]>([]); // Catégories affectées à l'utilisateur
+const userCategories = ref<any[]>([]);
 const users = ref<any[]>([]);
 const selectedUser = ref<number | null>(null);
 const state = useState();
@@ -199,7 +199,7 @@ h1 {
 }
 
 .category-card p {
-  margin: 10px 0 0 0; /* Espacement sous le texte "Lists :" */
-  font-size: 1.5rem; /* Taille du texte "Lists :" */
+  margin: 10px 0 0 0;
+  font-size: 1.5rem;
 }
 </style>

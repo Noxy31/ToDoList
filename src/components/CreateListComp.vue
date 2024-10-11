@@ -13,12 +13,11 @@ export default defineComponent({
     const labelList = ref('');
     const isPersonal = ref(false);
     const categories = ref<Category[]>([]);
-    const selectedCategory = ref(null);
+    const selectedCategory = ref<number | null>(null);
 
     const fetchCategories = async () => {
       try {
         const response = await fetch('api/categories', {
-          // on récupère les catégories
           method: 'GET',
           credentials: 'include'
         });
@@ -40,7 +39,6 @@ export default defineComponent({
     const createList = async () => {
       try {
         const response = await fetch('api/users/getUserId', {
-          // on récupère l'id de l'user qui est actuellement connecté
           method: 'GET',
           credentials: 'include'
         });
@@ -51,17 +49,17 @@ export default defineComponent({
 
         const { id: userId } = await response.json();
 
-        const listData = {
+        const listData: any = {
           labelList: labelList.value,
-          listCreationTime: new Date().toISOString(),
-          isArchived: false,
-          isPersonal: isPersonal.value,
-          idUser: userId,
-          idCategory: selectedCategory.value
+          isPersonnal: isPersonal.value,
+          idUser: userId
         };
 
+        if (!isPersonal.value && selectedCategory.value) {
+          listData.idCategory = selectedCategory.value;
+        }
+
         const createResponse = await fetch('api/list/create', {
-          // requète de création de liste
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -73,9 +71,9 @@ export default defineComponent({
           throw new Error('Erreur lors de la création de la liste');
         }
 
-        router.push({ name: 'ListsComp' }); // on redirige vers le composant Lists
+        alert('List successfully created');
       } catch (error) {
-        console.error("Erreur lors de l'ajout de la liste :", error);
+        console.error("Erreur lors de l'ajout d'une nouvelle liste :", error);
       }
     };
 
@@ -91,18 +89,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h1>Create a new list</h1>
-    <form @submit.prevent="createList">
+    <form class="createForm" @submit.prevent="createList">
       <div>
         <label for="labelList">Name of the list</label>
         <input type="text" v-model="labelList" required />
       </div>
       <div>
-        <label>Personnal list</label>
+        <label>Personal list</label>
         <input type="checkbox" v-model="isPersonal" />
       </div>
-      <div>
+
+      <div v-if="!isPersonal">
         <label for="category">Category:</label>
         <select v-model="selectedCategory" required>
           <option
@@ -114,9 +113,41 @@ export default defineComponent({
           </option>
         </select>
       </div>
-      <button type="submit">Créer la liste</button>
+
+      <button type="submit">Create the list</button>
     </form>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  margin-right: 5vw;
+  margin-top: 5vh;
+}
+
+h1 {
+  margin-bottom: 5vh;
+  font-size: 3rem;
+}
+
+label {
+  padding-right: 1vw;
+}
+
+button {
+  text-decoration: none;
+  background-color: #c1c1c1;
+  color: #000000;
+  border: none;
+  border-radius: 20px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 5vh;
+}
+
+.createForm {
+  font-size: 1.5rem;
+}
+</style>

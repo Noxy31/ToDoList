@@ -9,6 +9,14 @@ export default defineComponent({
       loading: true
     };
   },
+  computed: {
+    publicLists() {
+      return this.lists.filter((list) => !list.isPersonnal);
+    },
+    personalLists() {
+      return this.lists.filter((list) => list.isPersonnal);
+    }
+  },
   methods: {
     async redirectCreationList() {
       this.$router.push({ name: 'CreateList' });
@@ -25,7 +33,6 @@ export default defineComponent({
         }
 
         const { id } = await response.json();
-        console.log(`L'ID de l'utilisateur actuellement connecté est : ${id}`);
         return id;
       } catch (error) {
         console.error(error);
@@ -72,29 +79,108 @@ export default defineComponent({
       <button @click="redirectCreationList" class="addButt">Create a List</button>
     </div>
     <div v-if="loading">Loading lists...</div>
-    <ul v-if="!loading && lists.length">
-      <li v-for="list in lists" :key="list.idList">
-        <h3>{{ list.labelList }}</h3>
-        <p>Créée le : {{ formatDate(list.listCreationTime) }}</p>
-        <p>Statut : {{ list.isPersonnal ? 'Personnelle' : 'Publique' }}</p>
-      </li>
-    </ul>
-    <div v-else>
-      <p>No list found.</p>
+    <div class="lists-wrapper">
+      <div class="public-lists">
+        <div class="list-grid">
+          <div
+            class="list-card"
+            v-for="list in lists.filter((list) => !list.isPersonnal)"
+            :key="list.idList"
+          >
+            <h3>{{ list.labelList }}</h3>
+            <p>Created on: {{ formatDate(list.listCreationTime) }}</p>
+            <p>Status: {{ list.isPersonnal ? 'Personal' : 'Public' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="personal-lists">
+        <h2>Personnal Lists</h2>
+        <div
+          v-for="list in lists.filter((list) => list.isPersonnal)"
+          :key="list.idList"
+          class="list-card"
+        >
+          <h3>{{ list.labelList }}</h3>
+          <p>Created on: {{ formatDate(list.listCreationTime) }}</p>
+          <p>Status: {{ list.isPersonnal ? 'Personnal' : 'Public' }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
 <style scoped>
 .container {
-  font-size: 2rem;
-  justify-content: center;
-  margin-right: 5vw;
-  margin-top: 5vh;
+  font-size: 1.6rem;
+  margin: 2vh 5vw;
 }
 
 h1 {
-  margin-bottom: 5vh;
   font-size: 3rem;
+  margin-bottom: 4vh;
+  margin-right: 5vw;
+}
+
+.button-container {
+  margin-bottom: 8vh;
+  margin-right: 5vw;
+}
+
+.lists-wrapper {
+  display: flex;
+  gap: 2vw;
+}
+
+.public-lists {
+  flex: 1;
+  margin-bottom: 5vh;
+}
+
+.personal-lists {
+  flex: 1;
+  margin-bottom: 5vh;
+}
+
+.personal-lists h2 {
+  margin-bottom: 1.5rem;
+}
+
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.list-card {
+  background-color: #1f1f1f;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-width: 250px;
+  max-width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+  margin-bottom: 1rem;
+  margin-left: 2vw;
+}
+
+.list-card h3 {
+  font-size: 1.3rem;
+}
+
+.list-card p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.divider {
+  width: 1px;
+  background-color: #ccc;
+  height: auto;
+  margin: 0 2vw;
 }
 </style>
