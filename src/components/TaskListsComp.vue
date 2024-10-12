@@ -10,11 +10,33 @@ interface Task {
   lastUpdateMessage: string;
   lastUpdateTime?: string;
   isEditing?: boolean;
+  completionTimeTask?: string;
 }
 
 const formatDateTime = (timestamp: string) => {
   const date = new Date(timestamp);
   return date.toLocaleString();
+};
+
+const calculateDueDateDelta = (dueDate: string, completionDate: string | undefined): string => {
+  if (!completionDate) return '';
+
+  const due = new Date(dueDate);
+  const completed = new Date(completionDate);
+
+  const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+  const completedDay = new Date(completed.getFullYear(), completed.getMonth(), completed.getDate());
+
+  const deltaTime = (completedDay.getTime() - dueDay.getTime()) / (1000 * 3600 * 24);
+  const deltaDays = Math.round(deltaTime);
+
+  if (deltaDays === 0) {
+    return '+ 0 days';
+  } else if (deltaDays > 0) {
+    return `+ ${deltaDays} days`;
+  } else {
+    return `${deltaDays} days`;
+  }
 };
 
 export default defineComponent({
@@ -158,7 +180,8 @@ export default defineComponent({
       addTask,
       toggleTaskCompletion,
       toggleEditTask,
-      updateTask
+      updateTask,
+      calculateDueDateDelta
     };
   }
 });
@@ -183,7 +206,7 @@ export default defineComponent({
           <button @click="toggleEditTask(task)">Cancel</button>
         </div>
         <div v-else>
-          <strong :class="{ 'completed-task': task.completionStateTask }">{{
+          <strong :class="{ 'completed-task': task.completionStateTask }" class="task-name">{{
             task.labelTask
           }}</strong>
           - <span class="due-date">Due on: {{ formatDate(task.dueTask) }}</span>
@@ -197,6 +220,18 @@ export default defineComponent({
             />
             <span class="slider"></span>
           </label>
+
+          <span
+            v-if="task.completionStateTask"
+            :style="{
+              color: calculateDueDateDelta(task.dueTask, task.completionTimeTask).includes('+')
+                ? 'red'
+                : 'green'
+            }"
+          >
+            {{ calculateDueDateDelta(task.dueTask, task.completionTimeTask) }}
+          </span>
+
           <p>{{ task.lastUpdateMessage }}</p>
         </div>
       </li>
@@ -232,7 +267,7 @@ button {
   border-radius: 20px;
   cursor: pointer;
   margin-top: 1rem;
-  margin-left: 10vw;
+  margin-left: 5vw;
   transition:
     transform 0.2s,
     background-color 0.2s;
@@ -243,12 +278,10 @@ button:hover {
   transform: scale(1.05);
 }
 
-.edit-button {
-  padding: 0.5rem 0.75rem;
-}
-
 .add-button {
   margin-top: 2rem;
+  font-size: 1rem;
+  margin-left: 10vw;
 }
 
 .completed-task {
@@ -258,6 +291,10 @@ button:hover {
 
 .task-label {
   font-size: 1.25rem;
+}
+
+.task-name {
+  font-size: 1.5rem;
 }
 
 li {
