@@ -9,6 +9,7 @@ interface Task {
   completionStateTask: boolean;
   lastUpdateMessage: string;
   lastUpdateTime?: string;
+  isEditing?: boolean;
 }
 
 const formatDateTime = (timestamp: string) => {
@@ -28,9 +29,10 @@ export default defineComponent({
     });
 
     const tasks = ref<Task[]>([]);
+    let originalTask: Task | null = null;
 
     const fetchListDetails = async () => {
-      const listId = route.params.idList as string; // assertion type usage
+      const listId = route.params.idList as string;
       try {
         const response = await fetch(`/api/list/tasklist/${listId}`);
         if (!response.ok) {
@@ -54,6 +56,7 @@ export default defineComponent({
         const data = await response.json();
         tasks.value = data.map((task: any) => ({
           ...task,
+          isEditing: false,
           lastUpdateMessage: task.lastUpdatedBy
             ? `Updated last by ${task.lastUpdatedBy} at ${formatDateTime(task.lastUpdateTime)}`
             : 'Never been updated yet'
@@ -64,7 +67,7 @@ export default defineComponent({
     };
 
     const addTask = () => {
-      const listId = route.params.idList as string; // assertion type usage
+      const listId = route.params.idList as string;
       router.push({ name: 'CreateTask', params: { idList: listId } });
     };
 
@@ -89,12 +92,56 @@ export default defineComponent({
           throw new Error('Failed to update task');
         }
 
-        const updatedTask = tasks.value.find((t) => t.idTask === task.idTask);
-        if (updatedTask) {
-          updatedTask.completionStateTask = newCompletionState;
+        task.completionStateTask = newCompletionState;
+        await fetchTasks(listId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-          await fetchTasks(listId);
+    const toggleEditTask = (task: Task) => {
+      if (!task.isEditing) {
+        originalTask = { ...task };
+      } else {
+        task.labelTask = originalTask?.labelTask || '';
+        task.dueTask = originalTask?.dueTask || '';
+      }
+      task.isEditing = !task.isEditing;
+    };
+
+    const updateTask = async (task: Task) => {
+      const listId = route.params.idList as string;
+      const updates: Partial<Task> = {};
+
+      if (task.labelTask !== originalTask?.labelTask) {
+        updates.labelTask = task.labelTask;
+      }
+
+      if (task.dueTask !== originalTask?.dueTask) {
+        updates.dueTask = task.dueTask;
+      }
+
+      if (Object.keys(updates).length === 0) {
+        console.log('Aucun changement détecté.');
+        task.isEditing = false;
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/tasks/edit/${task.idTask}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updates)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update task');
         }
+
+        task.isEditing = false;
+        await fetchTasks(listId);
       } catch (error) {
         console.error(error);
       }
@@ -109,7 +156,9 @@ export default defineComponent({
       tasks,
       formatDate,
       addTask,
-      toggleTaskCompletion
+      toggleTaskCompletion,
+      toggleEditTask,
+      updateTask
     };
   }
 });
@@ -126,25 +175,34 @@ export default defineComponent({
 
     <h2 class="tasks-title">Tasks for this List</h2>
     <ul>
-      <li class="taskslabel" v-for="task in tasks" :key="task.idTask">
-        <strong :class="{ 'completed-task': task.completionStateTask, 'task-label': true }">{{
-          task.labelTask
-        }}</strong>
-        - <span class="due-date">Due on: {{ formatDate(task.dueTask) }}</span>
+      <li v-for="task in tasks" :key="task.idTask">
+        <div v-if="task.isEditing">
+          <input v-model="task.labelTask" type="text" />
+          <input v-model="task.dueTask" type="date" />
+          <button @click="updateTask(task)">Save</button>
+          <button @click="toggleEditTask(task)">Cancel</button>
+        </div>
+        <div v-else>
+          <strong :class="{ 'completed-task': task.completionStateTask }">{{
+            task.labelTask
+          }}</strong>
+          - <span class="due-date">Due on: {{ formatDate(task.dueTask) }}</span>
+          <button @click="toggleEditTask(task)" class="edit-button">Edit</button>
 
-        <label class="toggle">
-          <input
-            type="checkbox"
-            :checked="task.completionStateTask"
-            @change="toggleTaskCompletion(task)"
-          />
-          <span class="slider"></span>
-        </label>
-        <p>{{ task.lastUpdateMessage }}</p>
+          <label class="toggle">
+            <input
+              type="checkbox"
+              :checked="task.completionStateTask"
+              @change="toggleTaskCompletion(task)"
+            />
+            <span class="slider"></span>
+          </label>
+          <p>{{ task.lastUpdateMessage }}</p>
+        </div>
       </li>
     </ul>
 
-    <button @click="addTask">Add a task</button>
+    <button @click="addTask" class="add-button">Add a task</button>
   </div>
 </template>
 
@@ -167,18 +225,30 @@ p {
 }
 
 button {
-  padding: 0.75rem 1.5rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #000000;
+  border: 2px solid #000000;
+  border-radius: 20px;
   cursor: pointer;
-  margin-top: 2vh;
+  margin-top: 1rem;
   margin-left: 10vw;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.edit-button {
+  padding: 0.5rem 0.75rem;
+}
+
+.add-button {
+  margin-top: 2rem;
 }
 
 .completed-task {

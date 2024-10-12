@@ -71,7 +71,7 @@ export default defineComponent({
     <input id="taskLabel" v-model="taskLabel" />
 
     <label for="dueTask">Due Date and Time:</label>
-    <input type="datetime-local" id="dueTask" v-model="dueTask" />
+    <input type="date" id="dueTask" v-model="dueTask" />
 
     <button @click="createTask">Create Task</button>
   </div>
