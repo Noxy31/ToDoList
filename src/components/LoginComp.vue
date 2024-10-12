@@ -38,7 +38,7 @@ const handleLogin = async () => {
     localStorage.setItem('isAccEnabled', JSON.stringify(isAccEnabled));
 
     login();
-    router.push('/home');
+    router.push('/lists');
   } catch (error) {
     console.error(error);
   }
@@ -47,11 +47,11 @@ const handleLogin = async () => {
 
 <template>
   <div class="container">
-    <h1>Connect</h1>
+    <h1>Welcome to Organiz'heure</h1>
     <form @submit.prevent="handleLogin">
       <input v-model="email" type="email" placeholder="Email" required />
       <input v-model="password" type="password" placeholder="Mot de passe" required />
-      <button type="submit">Se connecter</button>
+      <button type="submit">Login</button>
     </form>
   </div>
 </template>

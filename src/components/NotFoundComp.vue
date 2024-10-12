@@ -2,7 +2,7 @@
   <div class="container">
     <h1>404 - Page not found</h1>
     <p>The page you're trying to access to doesn't exist.</p>
-    <router-link to="/home" class="link">Back to homepage</router-link>
+    <router-link to="/lists" class="link">Back to lists</router-link>
   </div>
 </template>
 

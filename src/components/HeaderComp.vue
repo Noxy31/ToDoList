@@ -1,8 +1,7 @@
 <template>
   <header class="HeaderComp">
     <nav>
-      <RouterLink to="/home">Home</RouterLink>
-      <RouterLink to="/lists">Lists</RouterLink>
+      <RouterLink to="/lists">Lists&Tasks</RouterLink>
       <RouterLink to="/categories">Categories</RouterLink>
       <RouterLink to="/account">My account</RouterLink>
     </nav>
