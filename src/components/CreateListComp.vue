@@ -23,12 +23,12 @@ export default defineComponent({
         });
 
         if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des catégories');
+          throw new Error('Error');
         }
 
         categories.value = await response.json();
       } catch (error) {
-        console.error('Erreur lors de la récupération des catégories :', error);
+        console.error(error);
       }
     };
 
@@ -44,7 +44,7 @@ export default defineComponent({
         });
 
         if (!response.ok) {
-          throw new Error("Erreur lors de la récupération de l'ID utilisateur");
+          throw new Error('Error');
         }
 
         const { id: userId } = await response.json();
@@ -68,12 +68,12 @@ export default defineComponent({
         });
 
         if (!createResponse.ok) {
-          throw new Error('Erreur lors de la création de la liste');
+          throw new Error('Error');
         }
 
         alert('List successfully created');
       } catch (error) {
-        console.error("Erreur lors de l'ajout d'une nouvelle liste :", error);
+        console.error(error);
       }
     };
 

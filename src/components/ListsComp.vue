@@ -61,8 +61,6 @@ export default defineComponent({
         this.lists = data;
       } catch (error) {
         console.error(error);
-      } finally {
-        this.loading = false;
       }
     },
     formatDate(timestamp: string) {
@@ -86,7 +84,6 @@ export default defineComponent({
       <button @click="redirectCreationList" class="addButt">Create a List</button>
       <button @click="redirectToArchivedLists" class="addButt">Archived Lists</button>
     </div>
-    <div v-if="loading">Loading lists...</div>
     <div class="lists-wrapper">
       <div class="public-lists">
         <div class="list-grid">

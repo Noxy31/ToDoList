@@ -71,12 +71,12 @@ h1 {
 
 .lists-wrapper {
   display: flex;
-  justify-content: center; /* Centrer les colonnes */
+  justify-content: center;
 }
 
 .list-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
 }
 

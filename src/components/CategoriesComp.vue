@@ -20,13 +20,13 @@ const fetchCategories = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des catégories');
+      throw new Error('Error');
     }
 
     const data = await response.json();
     categories.value = data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories :', error);
+    console.error(error);
   }
 };
 
@@ -40,13 +40,13 @@ const fetchUserCategories = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des catégories de l’utilisateur');
+      throw new Error('Error');
     }
 
     const data = await response.json();
     userCategories.value = data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories de l’utilisateur :', error);
+    console.error(error);
   }
 };
 
@@ -60,13 +60,13 @@ const fetchAllCategories = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des catégories de l’utilisateur');
+      throw new Error('Error');
     }
 
     const data = await response.json();
     categories.value = data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories de l’utilisateur :', error);
+    console.error(error);
   }
 };
 
@@ -80,13 +80,13 @@ const fetchUsers = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des utilisateurs');
+      throw new Error('Error');
     }
 
     const data = await response.json();
     users.value = data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs :', error);
+    console.error(error);
   }
 };
 
@@ -102,13 +102,13 @@ const assignUserToCategory = async (idCategory: number) => {
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de l'assignation de l'utilisateur");
+        throw new Error('Error');
       }
 
       const data = await response.json();
       alert(data.message);
     } catch (error) {
-      console.error("Erreur lors de l'assignation de l'utilisateur :", error);
+      console.error(error);
       alert("Erreur lors de l'assignation de l'utilisateur.");
     }
   } else {
@@ -128,17 +128,17 @@ const unassignUserFromCategory = async (idCategory: number) => {
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la désassignation de l'utilisateur");
+        throw new Error('Error');
       }
 
       const data = await response.json();
       alert(data.message);
     } catch (error) {
-      console.error("Erreur lors de la désassignation de l'utilisateur :", error);
+      console.error(error);
       alert("Erreur lors de la désassignation de l'utilisateur.");
     }
   } else {
-    alert('Veuillez sélectionner un utilisateur.');
+    alert('Please select a user');
   }
 };
 
@@ -229,8 +229,8 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
-  justify-content: space-between; /* Modification ici */
-  gap: 20px; /* Espacement entre les cartes */
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .category-card {
@@ -245,7 +245,7 @@ h1 {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 30%; /* Ajustement de la largeur des cartes */
+  width: 30%;
 }
 
 .category-card h2 {

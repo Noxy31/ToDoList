@@ -31,7 +31,7 @@ const createUser = async () => {
 
     alert('User successfully created !');
   } catch (error) {
-    console.error("Erreur sur la création de l'utilisateur :", error);
+    console.error(error);
     alert('Erreur création utilisateur');
   }
 };

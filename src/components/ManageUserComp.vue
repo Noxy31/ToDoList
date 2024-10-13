@@ -22,7 +22,7 @@ const fetchUsers = async () => {
 
     users.value = data.filter((user: User) => user.idUser !== currentUserId.value);
   } catch (error) {
-    console.error('Erreur lors de la récupération des utilisateurs :', error);
+    console.error(error);
   }
 };
 
@@ -50,10 +50,10 @@ const toggleUserStatus = async (user: User) => {
     if (response.ok) {
       user.isAccEnabled = newStatus;
     } else {
-      console.error('Erreur lors de la mise à jour du statut de l’utilisateur');
+      console.error('Error');
     }
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du statut de l’utilisateur', error);
+    console.error(error);
   }
 };
 
