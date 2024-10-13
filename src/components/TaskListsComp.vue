@@ -47,7 +47,8 @@ export default defineComponent({
       labelList: '',
       isPersonnal: false,
       listCreationTime: '',
-      creatorName: ''
+      creatorName: '',
+      isArchived: false
     });
 
     const tasks = ref<Task[]>([]);
@@ -61,7 +62,14 @@ export default defineComponent({
           throw new Error('Failed to fetch list details');
         }
         const data = await response.json();
-        list.value = data;
+
+        list.value = {
+          labelList: data.labelList,
+          isPersonnal: data.isPersonnal,
+          listCreationTime: data.listCreationTime,
+          creatorName: data.creatorName,
+          isArchived: data.isArchived
+        };
 
         fetchTasks(listId);
       } catch (error) {
@@ -115,9 +123,70 @@ export default defineComponent({
         }
 
         task.completionStateTask = newCompletionState;
+
+        await fetch(`/api/list/update-time/${listId}`, {
+          method: 'PUT'
+        });
+
         await fetchTasks(listId);
       } catch (error) {
         console.error(error);
+      }
+    };
+
+    const archiveList = async () => {
+      const listId = route.params.idList as string;
+      const allTasksCompleted = tasks.value.every((task) => task.completionStateTask);
+
+      if (!allTasksCompleted) {
+        alert('All tasks must be completed to archive the list.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/list/archive/${listId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to archive list');
+        }
+
+        list.value.isArchived = true;
+        alert('List successfully archived');
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const unarchiveList = async () => {
+      const listId = route.params.idList as string;
+
+      try {
+        const response = await fetch(`/api/list/unarchive/${listId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            isArchived: false,
+            idArchiver: null,
+            archiveTime: null
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to unarchive list');
+        }
+
+        alert('List successfully unarchived');
+        list.value.isArchived = false;
+      } catch (error) {
+        console.error(error);
+        alert('Error unarchiving the list');
       }
     };
 
@@ -162,6 +231,10 @@ export default defineComponent({
           throw new Error('Failed to update task');
         }
 
+        await fetch(`/api/list/update-time/${listId}`, {
+          method: 'PUT'
+        });
+
         task.isEditing = false;
         await fetchTasks(listId);
       } catch (error) {
@@ -178,6 +251,8 @@ export default defineComponent({
       tasks,
       formatDate,
       addTask,
+      archiveList,
+      unarchiveList,
       toggleTaskCompletion,
       toggleEditTask,
       updateTask,
@@ -189,7 +264,10 @@ export default defineComponent({
 
 <template>
   <div class="list-details">
-    <h1 class="list-title">{{ list.labelList }}</h1>
+    <h1 class="list-title">
+      {{ list.labelList }}
+      <span v-if="list.isArchived" style="font-style: italic"> - Archived</span>
+    </h1>
     <p class="list-info">
       <strong>Type:</strong> {{ list.isPersonnal ? 'Personal' : 'Public' }} -
       <strong>Created on:</strong> {{ formatDate(list.listCreationTime) }} -
@@ -210,9 +288,11 @@ export default defineComponent({
             task.labelTask
           }}</strong>
           - <span class="due-date">Due on: {{ formatDate(task.dueTask) }}</span>
-          <button @click="toggleEditTask(task)" class="edit-button">Edit</button>
+          <button v-if="!list.isArchived" @click="toggleEditTask(task)" class="edit-button">
+            Edit
+          </button>
 
-          <label class="toggle">
+          <label v-if="!list.isArchived" class="toggle">
             <input
               type="checkbox"
               :checked="task.completionStateTask"
@@ -236,8 +316,11 @@ export default defineComponent({
         </div>
       </li>
     </ul>
-
-    <button @click="addTask" class="add-button">Add a task</button>
+    <button v-if="!list.isArchived" @click="archiveList" class="archive-button">Archive</button>
+    <button v-if="list.isArchived" @click="unarchiveList" class="unarchive-button">
+      Unarchive
+    </button>
+    <button v-if="!list.isArchived" @click="addTask" class="add-button">Add a task</button>
   </div>
 </template>
 
@@ -307,6 +390,7 @@ li {
   width: 40px;
   height: 20px;
   margin-left: 10px;
+  margin-right: 10px;
 }
 
 .toggle input {
