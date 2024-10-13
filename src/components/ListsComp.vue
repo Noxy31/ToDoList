@@ -21,6 +21,9 @@ export default defineComponent({
     async redirectCreationList() {
       this.$router.push({ name: 'CreateList' });
     },
+    async redirectToArchivedLists() {
+      this.$router.push({ name: 'ArchivedComp' });
+    },
     async fetchUserId() {
       try {
         const response = await fetch('api/users/getUserId', {
@@ -39,6 +42,7 @@ export default defineComponent({
         return null;
       }
     },
+
     async fetchLists() {
       const userId = await this.fetchUserId();
       if (!userId) return;
@@ -80,6 +84,7 @@ export default defineComponent({
     <h1>My Lists</h1>
     <div class="button-container">
       <button @click="redirectCreationList" class="addButt">Create a List</button>
+      <button @click="redirectToArchivedLists" class="addButt">Archived Lists</button>
     </div>
     <div v-if="loading">Loading lists...</div>
     <div class="lists-wrapper">
@@ -125,6 +130,11 @@ export default defineComponent({
 h1 {
   font-size: 3rem;
   margin-bottom: 4vh;
+}
+
+button {
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .button-container {

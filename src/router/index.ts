@@ -10,6 +10,7 @@ import CreateCategoryComp from '../components/CreateCategoryComp.vue';
 import CategoriesComp from '../components/CategoriesComp.vue';
 import CreateUserComp from '@/components/CreateUserComp.vue';
 import ManageUserComp from '@/components/ManageUserComp.vue';
+import ArchivedComp from '@/components/ArchivedComp.vue';
 import NotFound from '../components/NotFoundComp.vue';
 import Cookies from 'js-cookie';
 import { useState } from '../store/store';
@@ -64,6 +65,12 @@ const routes = [
     name: 'TaskListsComp',
     component: TaskListsComp,
     props: true,
+    meta: { requiresAuth: true, requiresEnabled: true }
+  },
+  {
+    path: '/archived',
+    name: 'ArchivedComp',
+    component: ArchivedComp,
     meta: { requiresAuth: true, requiresEnabled: true }
   },
   {
